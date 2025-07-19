@@ -102,12 +102,11 @@
 	}
 
 	function generateWeatherWarnings(weatherData) {
-		const warnings = [];
 		const daily = weatherData.daily;
+		const warningTypes = new Map();
 
-		// Check next 5 days for weather warnings
-		for (let i = 0; i < Math.min(5, daily.time.length); i++) {
-			const date = new Date(daily.time[i]).toLocaleDateString();
+		// Check next 7 days for weather patterns
+		for (let i = 0; i < Math.min(7, daily.time.length); i++) {
 			const maxTemp = daily.temperature_2m_max[i];
 			const minTemp = daily.temperature_2m_min[i];
 			const rainfall = daily.precipitation_sum[i];
@@ -115,25 +114,28 @@
 
 			// Heavy rain warning (>20mm per day)
 			if (rainfall > 20) {
-				warnings.push({
-					type: 'heavy_rain',
-					severity: rainfall > 50 ? 'high' : 'medium',
-					message: `Heavy rainfall expected (${Math.round(rainfall)}mm)`,
-					date: date,
-					affectedCrops: recommendations.filter((crop) =>
-						['tomatoes', 'peppers', 'beans', 'leafy greens'].includes(crop.name.toLowerCase())
-					),
-					advice: 'Ensure proper drainage, avoid planting in low areas'
-				});
+				const existingRain = warningTypes.get('heavy_rain');
+				const currentRainfall = Math.round(rainfall);
+				if (!existingRain || currentRainfall > existingRain.maxRainfall) {
+					warningTypes.set('heavy_rain', {
+						type: 'heavy_rain',
+						severity: rainfall > 50 ? 'high' : 'medium',
+						message: `Heavy rainfall expected this week (up to ${currentRainfall}mm/day)`,
+						maxRainfall: currentRainfall,
+						affectedCrops: recommendations.filter((crop) =>
+							['tomatoes', 'peppers', 'beans', 'leafy greens'].includes(crop.name.toLowerCase())
+						),
+						advice: 'Ensure proper drainage, avoid planting in low areas'
+					});
+				}
 			}
 
 			// Storm warning (weather codes 95-99 are thunderstorms)
 			if (weatherCode >= 95 && weatherCode <= 99) {
-				warnings.push({
+				warningTypes.set('storm', {
 					type: 'storm',
 					severity: 'high',
-					message: 'Thunderstorms expected',
-					date: date,
+					message: 'Thunderstorms expected this week',
 					affectedCrops: recommendations.filter((crop) =>
 						['tomatoes', 'peppers', 'leafy greens', 'herbs'].includes(crop.name.toLowerCase())
 					),
@@ -143,42 +145,53 @@
 
 			// Extreme heat warning (>35°C)
 			if (maxTemp > 35) {
-				warnings.push({
-					type: 'heat',
-					severity: 'medium',
-					message: `Extreme heat expected (${Math.round(maxTemp)}°C)`,
-					date: date,
-					affectedCrops: recommendations.filter((crop) =>
-						['leafy greens', 'herbs'].includes(crop.category)
-					),
-					advice: 'Provide shade cover, increase watering frequency'
-				});
-			}
-
-			// Drought warning (no rain for extended period and high temp)
-			if (rainfall < 1 && maxTemp > 32) {
-				warnings.push({
-					type: 'drought',
-					severity: 'medium',
-					message: 'Hot and dry conditions',
-					date: date,
-					affectedCrops: recommendations,
-					advice: 'Ensure adequate irrigation, consider mulching'
-				});
+				const existingHeat = warningTypes.get('heat');
+				const currentTemp = Math.round(maxTemp);
+				if (!existingHeat || currentTemp > existingHeat.maxTemp) {
+					warningTypes.set('heat', {
+						type: 'heat',
+						severity: maxTemp > 38 ? 'high' : 'medium',
+						message: `Extreme heat expected this week (up to ${currentTemp}°C)`,
+						maxTemp: currentTemp,
+						affectedCrops: recommendations.filter((crop) =>
+							['leafy greens', 'herbs'].includes(crop.category)
+						),
+						advice: 'Provide shade cover, increase watering frequency'
+					});
+				}
 			}
 		}
 
-		// Remove duplicates and limit to most severe warnings
-		weatherWarnings = warnings
-			.filter(
-				(warning, index, self) =>
-					index === self.findIndex((w) => w.type === warning.type && w.date === warning.date)
-			)
-			.sort((a, b) => {
-				const severityOrder = { high: 3, medium: 2, low: 1 };
-				return severityOrder[b.severity] - severityOrder[a.severity];
-			})
-			.slice(0, 5); // Limit to 5 most important warnings
+		// Check for drought patterns (multiple consecutive dry days with heat)
+		let consecutiveDryDays = 0;
+		let maxConsecutiveDry = 0;
+		for (let i = 0; i < Math.min(7, daily.time.length); i++) {
+			const rainfall = daily.precipitation_sum[i];
+			const maxTemp = daily.temperature_2m_max[i];
+
+			if (rainfall < 1 && maxTemp > 32) {
+				consecutiveDryDays++;
+				maxConsecutiveDry = Math.max(maxConsecutiveDry, consecutiveDryDays);
+			} else {
+				consecutiveDryDays = 0;
+			}
+		}
+
+		if (maxConsecutiveDry >= 3) {
+			warningTypes.set('drought', {
+				type: 'drought',
+				severity: maxConsecutiveDry >= 5 ? 'high' : 'medium',
+				message: `Extended dry period expected (${maxConsecutiveDry} consecutive days)`,
+				affectedCrops: recommendations,
+				advice: 'Ensure adequate irrigation, consider mulching to retain moisture'
+			});
+		}
+
+		// Convert to array and sort by severity
+		weatherWarnings = Array.from(warningTypes.values()).sort((a, b) => {
+			const severityOrder = { high: 3, medium: 2, low: 1 };
+			return severityOrder[b.severity] - severityOrder[a.severity];
+		});
 	}
 
 	onMount(() => {
@@ -299,7 +312,6 @@
 								</span>
 								<div class="warning-content">
 									<h4>{warning.message}</h4>
-									<span class="warning-date">{warning.date}</span>
 								</div>
 							</div>
 

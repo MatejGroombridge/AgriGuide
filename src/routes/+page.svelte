@@ -4,10 +4,9 @@
 
 	let inputMode = 'manual'; // 'manual' or 'qr'
 	let soilData = {
-		ph: '',
-		organicMatter: '',
-		nitrogen: '',
-		moisture: ''
+		moisture: '',
+		light: '',
+		temperature: ''
 	};
 
 	function switchMode(mode) {
@@ -16,8 +15,8 @@
 
 	function handleSubmit() {
 		// Validate all fields are filled
-		if (!soilData.ph || !soilData.organicMatter || !soilData.nitrogen || !soilData.moisture) {
-			alert('Please fill in all soil data fields');
+		if (!soilData.moisture || !soilData.light || !soilData.temperature) {
+			alert('Please fill in all sensor data fields');
 			return;
 		}
 
@@ -26,10 +25,12 @@
 			localStorage.setItem(
 				'soilData',
 				JSON.stringify({
-					ph: parseFloat(soilData.ph),
-					organicMatter: parseFloat(soilData.organicMatter),
-					nitrogen: parseFloat(soilData.nitrogen),
-					moisture: parseFloat(soilData.moisture)
+					ph: 6.5, // Default pH value since sensor was removed
+					organicMatter: 3.0, // Default organic matter value since sensor was removed
+					nitrogen: 80, // Default nitrogen value since sensor was removed
+					moisture: parseFloat(soilData.moisture),
+					light: parseFloat(soilData.light),
+					temperature: parseFloat(soilData.temperature)
 				})
 			);
 		}
@@ -63,7 +64,11 @@
 	function stopScanning() {
 		scanning = false;
 		if (stream) {
-			stream.getTracks().forEach((track) => track.stop());
+			stream.getTracks().forEach((track) => {
+				if (track.readyState == 'live') {
+					track.stop();
+				}
+			});
 			stream = null;
 		}
 	}
@@ -79,8 +84,8 @@
 </svelte:head>
 
 <div class="home-container">
-	<h1>🌱 Soil Data Input</h1>
-	<p>Enter your soil conditions to get personalised crop recommendations</p>
+	<h1>🌱 Sensor Data Input</h1>
+	<p>Enter your sensor readings to get personalised crop recommendations</p>
 
 	<div class="mode-selector">
 		<button
@@ -98,47 +103,6 @@
 	{#if inputMode === 'manual'}
 		<div class="manual-input">
 			<div class="input-group">
-				<label for="ph">pH Level</label>
-				<input
-					id="ph"
-					type="number"
-					step="0.1"
-					min="0"
-					max="14"
-					placeholder="6.5"
-					bind:value={soilData.ph}
-				/>
-				<small>Typical range: 5.0 - 8.0</small>
-			</div>
-
-			<div class="input-group">
-				<label for="organic">Organic Matter Content (%)</label>
-				<input
-					id="organic"
-					type="number"
-					step="0.1"
-					min="0"
-					max="100"
-					placeholder="3.2"
-					bind:value={soilData.organicMatter}
-				/>
-				<small>Typical range: 1.0 - 6.0%</small>
-			</div>
-
-			<div class="input-group">
-				<label for="nitrogen">Nitrogen Content (ppm)</label>
-				<input
-					id="nitrogen"
-					type="number"
-					step="1"
-					min="0"
-					placeholder="80"
-					bind:value={soilData.nitrogen}
-				/>
-				<small>Typical range: 20 - 200 ppm</small>
-			</div>
-
-			<div class="input-group">
 				<label for="moisture">Moisture Level (%)</label>
 				<input
 					id="moisture"
@@ -152,6 +116,33 @@
 				<small>Typical range: 20 - 90%</small>
 			</div>
 
+			<div class="input-group">
+				<label for="light">Light Intensity (lux)</label>
+				<input
+					id="light"
+					type="number"
+					step="100"
+					min="0"
+					placeholder="25000"
+					bind:value={soilData.light}
+				/>
+				<small>Typical range: 10,000 - 50,000 lux</small>
+			</div>
+
+			<div class="input-group">
+				<label for="temperature">Temperature (°C)</label>
+				<input
+					id="temperature"
+					type="number"
+					step="0.1"
+					min="-10"
+					max="50"
+					placeholder="28.5"
+					bind:value={soilData.temperature}
+				/>
+				<small>Typical range: 15 - 35°C</small>
+			</div>
+
 			<button class="btn submit-btn" on:click={handleSubmit}> Get Recommendations 🚀 </button>
 		</div>
 	{:else}
@@ -160,7 +151,7 @@
 				<div class="qr-scanner-placeholder">
 					<div class="qr-icon">📱</div>
 					<h3>QR Code Scanner</h3>
-					<p>Position your device camera over the QR code to automatically input soil data</p>
+					<p>Position your device camera over the QR code to automatically input sensor data</p>
 					<button class="btn" on:click={scanQRCode}> Start Scanning </button>
 				</div>
 			{:else if scanning}
@@ -264,6 +255,12 @@
 		color: #666;
 		margin-bottom: 24px;
 		line-height: 1.5;
+	}
+
+	.qr-scanner-video {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	/* Desktop responsive adjustments */
