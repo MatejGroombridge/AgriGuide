@@ -46,6 +46,18 @@
 	let html5QrCode;
 	let qrCodeRegionId = 'qr-code-region';
 
+	function parseQrData(qrString) {
+		// Expected format: moisture:xx,light:xxxxxx,temperature:xx
+		const regex = /^moisture:(\d+(?:\.\d+)?),light:(\d+(?:\.\d+)?),temperature:(-?\d+(?:\.\d+)?)$/;
+		const match = qrString.match(regex);
+		if (!match) return null;
+		return {
+			moisture: match[1],
+			light: match[2],
+			temperature: match[3]
+		};
+	}
+
 	async function scanQRCode() {
 		scanning = true;
 		qrResult = '';
@@ -60,8 +72,16 @@
 						qrbox: 250
 					},
 					(decodedText, decodedResult) => {
-						qrResult = decodedText;
-						stopScanning();
+						const parsed = parseQrData(decodedText);
+						if (parsed) {
+							soilData.moisture = parsed.moisture;
+							soilData.light = parsed.light;
+							soilData.temperature = parsed.temperature;
+							qrResult = decodedText;
+							stopScanning();
+						} else {
+							qrResult = 'Invalid QR code format.';
+						}
 					}
 				);
 			} catch (err) {

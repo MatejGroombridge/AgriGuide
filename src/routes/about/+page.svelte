@@ -389,39 +389,43 @@
 
 	.cta-section {
 		text-align: center;
-		background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-		color: white;
+		background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+		color: #2c3e50;
 		border-radius: 16px;
 		padding: 40px 24px;
+		border: 2px solid #d4e6d4;
 	}
 
 	.cta-section h3 {
-		color: white;
+		color: #2c3e50;
 		margin-bottom: 12px;
 	}
 
 	.cta-section p {
 		margin-bottom: 24px;
-		opacity: 0.9;
+		opacity: 0.8;
 		font-size: 16px;
+		color: #555;
 	}
 
 	.cta-button {
 		display: inline-block;
-		background: white;
-		color: #4caf50;
+		background: #4caf50;
+		color: white;
 		padding: 16px 32px;
 		border-radius: 50px;
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 16px;
 		transition: all 0.3s ease;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+		border: 2px solid transparent;
 	}
 
 	.cta-button:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+		background: #45a049;
 	}
 
 	/* Desktop responsive adjustments */

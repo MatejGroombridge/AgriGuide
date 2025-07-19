@@ -17,7 +17,7 @@
 	<div class="loading-screen" class:fade-out={fadeOut}>
 		<div class="loading-content">
 			<div class="logo-container">
-				<img src="/images/logo.png" alt="AgriGuide Logo" class="logo" />
+				<img src="/images/logo-bgremoved.png" alt="AgriGuide Logo" class="logo" />
 			</div>
 			<div class="loading-spinner">
 				<div class="spinner"></div>
@@ -34,7 +34,7 @@
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+		background: white;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -44,7 +44,7 @@
 
 	.loading-content {
 		text-align: center;
-		color: white;
+		color: #2c3e50;
 	}
 
 	.logo-container {
@@ -57,7 +57,7 @@
 		max-height: 200px;
 		width: auto;
 		height: auto;
-		filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+		filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.1));
 	}
 
 	.loading-spinner {
@@ -69,8 +69,8 @@
 	.spinner {
 		width: 40px;
 		height: 40px;
-		border: 4px solid rgba(255, 255, 255, 0.3);
-		border-top: 4px solid white;
+		border: 4px solid rgba(76, 175, 80, 0.2);
+		border-top: 4px solid #4caf50;
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 	}
