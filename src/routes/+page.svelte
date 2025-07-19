@@ -38,9 +38,38 @@
 		goto('/recommendations');
 	}
 
-	function scanQRCode() {
-		// Placeholder for QR code functionality
-		alert('QR Code scanning functionality will be implemented in the future');
+	// Camera logic for QR
+	let scanning = false;
+	let videoElement;
+
+	async function scanQRCode() {
+		scanning = true;
+		if (browser && navigator.mediaDevices?.getUserMedia) {
+			try {
+				const stream = await navigator.mediaDevices.getUserMedia({
+					video: { facingMode: 'environment' }
+				});
+				if (videoElement) {
+					videoElement.srcObject = stream;
+				}
+			} catch (err) {
+				alert('Could not access camera: ' + err.message);
+				scanning = false;
+			}
+		}
+	}
+
+	function stopScanning() {
+		scanning = false;
+		if (stream) {
+			stream.getTracks().forEach((track) => track.stop());
+			stream = null;
+		}
+	}
+
+	// Optional: stop camera if mode changes or component is destroyed
+	$: if (!scanning && videoElement && videoElement.srcObject) {
+		videoElement.srcObject = null;
 	}
 </script>
 
@@ -126,12 +155,30 @@
 		</div>
 	{:else}
 		<div class="qr-input">
-			<div class="qr-scanner-placeholder">
-				<div class="qr-icon">📱</div>
-				<h3>QR Code Scanner</h3>
-				<p>Position your device camera over the QR code to automatically input soil data</p>
-				<button class="btn" on:click={scanQRCode}> Start Scanning </button>
-			</div>
+			{#if !scanning}
+				<div class="qr-scanner-placeholder">
+					<div class="qr-icon">📱</div>
+					<h3>QR Code Scanner</h3>
+					<p>Position your device camera over the QR code to automatically input soil data</p>
+					<button class="btn" on:click={scanQRCode}> Start Scanning </button>
+				</div>
+			{:else if scanning}
+				<div class="qr-scanner-video">
+					<video
+						bind:this={videoElement}
+						autoplay
+						playsinline
+						aria-label="QR code scanner camera feed"
+						style="width:100%;max-width:400px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.1);"
+					>
+						<track kind="captions" label="No Caption Available" src="" default />
+					</video>
+					<p style="margin-top:12px;color:#666;">
+						Camera active. Position the QR code within the frame.
+					</p>
+					<button class="btn" on:click={stopScanning}>Stop Scanning</button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 </div>
@@ -216,5 +263,69 @@
 		color: #666;
 		margin-bottom: 24px;
 		line-height: 1.5;
+	}
+
+	/* Desktop responsive adjustments */
+	@media (min-width: 768px) {
+		.home-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 40px;
+			align-items: start;
+		}
+
+		.home-container h1,
+		.home-container > p {
+			grid-column: 1 / -1;
+		}
+
+		.mode-selector {
+			grid-column: 1 / -1;
+			max-width: 400px;
+			margin: 0 auto 32px;
+		}
+
+		.manual-input,
+		.qr-input {
+			grid-column: 1 / -1;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+
+		.manual-input .input-group {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 20px;
+			align-items: start;
+			margin-bottom: 24px;
+		}
+
+		.manual-input .input-group:nth-child(odd) {
+			grid-column: 1;
+		}
+
+		.manual-input .input-group:nth-child(even) {
+			grid-column: 2;
+		}
+
+		.submit-btn {
+			grid-column: 1 / -1;
+			max-width: 400px;
+			margin: 24px auto 0;
+		}
+
+		.qr-scanner-placeholder {
+			padding: 60px 40px;
+		}
+
+		.qr-icon {
+			font-size: 96px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.manual-input .input-group {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 </style>

@@ -35,10 +35,21 @@
 		background: #fff;
 		border-top: 1px solid #e0e0e0;
 		display: flex;
-		justify-content: space-around;
 		padding: 12px 0;
 		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 		z-index: 100;
+	}
+
+	/* Desktop responsive adjustments */
+	@media (min-width: 768px) {
+		.navbar {
+			left: 50%;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: 1160px;
+			margin: 0 20px;
+			border-radius: 12px 12px 0 0;
+		}
 	}
 
 	.nav-item {
@@ -51,6 +62,8 @@
 		padding: 8px;
 		border-radius: 8px;
 		min-width: 60px;
+		flex: 1; /* Make each nav item take up equal space */
+		justify-content: center; /* Center content vertically */
 	}
 
 	.nav-item:hover:not(.disabled) {

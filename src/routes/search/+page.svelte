@@ -1,5 +1,6 @@
 <script>
 	import { crops, searchCrops } from '$lib/data/crops.js';
+	import { convertAndFormatPrice } from '$lib/utils/currency.js';
 
 	let searchQuery = '';
 	let filteredCrops = crops;
@@ -55,7 +56,7 @@
 					<p class="crop-description">{crop.description}</p>
 					<div class="crop-meta">
 						<span class="meta-item">
-							💰 ${crop.marketPrice}/ton
+							💰 {convertAndFormatPrice(crop.marketPrice)}/ton
 						</span>
 						<span class="meta-item">
 							📅 Best: {crop.bestSellMonth}
@@ -250,5 +251,92 @@
 		color: #666;
 		margin-bottom: 24px;
 		line-height: 1.6;
+	}
+
+	/* Desktop responsive adjustments */
+	@media (min-width: 768px) {
+		.search-container {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+
+		.search-input {
+			font-size: 18px;
+			padding: 20px 60px 20px 24px;
+		}
+
+		.clear-btn {
+			width: 32px;
+			height: 32px;
+			right: 16px;
+		}
+
+		.results-info {
+			font-size: 16px;
+			margin-bottom: 30px;
+		}
+
+		.crops-list {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+			gap: 20px;
+		}
+
+		.crop-item {
+			padding: 24px;
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.crop-icon-wrapper {
+			margin-right: 0;
+			margin-bottom: 16px;
+		}
+
+		.crop-icon {
+			font-size: 56px;
+		}
+
+		.crop-name {
+			font-size: 20px;
+			margin-bottom: 12px;
+		}
+
+		.crop-description {
+			font-size: 16px;
+			margin-bottom: 16px;
+			-webkit-line-clamp: 3;
+			line-clamp: 3;
+		}
+
+		.crop-meta {
+			justify-content: center;
+			gap: 12px;
+		}
+
+		.meta-item {
+			font-size: 13px;
+			padding: 6px 12px;
+		}
+
+		.crop-arrow {
+			display: none;
+		}
+
+		.no-results {
+			max-width: 600px;
+			margin: 0 auto;
+			padding: 80px 40px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.search-container {
+			max-width: 1000px;
+		}
+
+		.crops-list {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 </style>

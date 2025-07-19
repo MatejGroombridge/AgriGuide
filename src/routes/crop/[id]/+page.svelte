@@ -1,6 +1,7 @@
 <script>
 	import { browser } from '$app/environment';
 	import BackButton from '$lib/components/BackButton.svelte';
+	import { convertAndFormatPrice } from '$lib/utils/currency.js';
 
 	export let data;
 	$: ({ crop } = data);
@@ -57,6 +58,13 @@
 
 	$: recommendationReason = getRecommendationReason();
 	$: plantingMonth = calculatePlantingTime();
+
+	// Tab management for farming tips
+	let activeTab = 'preHarvest';
+
+	function setActiveTab(tab) {
+		activeTab = tab;
+	}
 </script>
 
 <svelte:head>
@@ -73,42 +81,14 @@
 		</div>
 		<div class="crop-title">
 			<h1>{crop.name}</h1>
-			<p class="crop-subtitle">{crop.description}</p>
 		</div>
 	</div>
 
-	<!-- Key Metrics -->
-	<div class="card metrics-card">
-		<h3>📊 Key Information</h3>
-		<div class="metrics-grid">
-			<div class="metric">
-				<span class="metric-icon">💰</span>
-				<div class="metric-info">
-					<span class="metric-label">Market Price</span>
-					<span class="metric-value">${crop.marketPrice}/ton</span>
-				</div>
-			</div>
-			<div class="metric">
-				<span class="metric-icon">📅</span>
-				<div class="metric-info">
-					<span class="metric-label">Best Sell Time</span>
-					<span class="metric-value">{crop.bestSellMonth}</span>
-				</div>
-			</div>
-			<div class="metric">
-				<span class="metric-icon">⏱️</span>
-				<div class="metric-info">
-					<span class="metric-label">Growth Period</span>
-					<span class="metric-value">{crop.growthTime} days</span>
-				</div>
-			</div>
-			<div class="metric">
-				<span class="metric-icon">🌱</span>
-				<div class="metric-info">
-					<span class="metric-label">Plant in</span>
-					<span class="metric-value">{plantingMonth}</span>
-				</div>
-			</div>
+	<!-- Crop Description -->
+	<div class="card description-card">
+		<h3>� About This Crop</h3>
+		<div class="description-content">
+			<p>{crop.description}</p>
 		</div>
 	</div>
 
@@ -175,21 +155,67 @@
 
 	<!-- Farming Tips -->
 	<div class="card tips-card">
-		<h3>💡 Farming Tips</h3>
+		<h3>💡 Comprehensive Farming Guide</h3>
 
-		<div class="tip-section">
-			<h4>🌱 Pre-Harvest Tips</h4>
-			<p>{crop.preHarvestTips}</p>
+		<!-- Tab Navigation -->
+		<div class="tab-navigation">
+			<button
+				class="tab-button"
+				class:active={activeTab === 'preHarvest'}
+				on:click={() => setActiveTab('preHarvest')}
+			>
+				<span class="tab-icon">🌱</span>
+				<span class="tab-text">Pre-Harvest</span>
+			</button>
+			<button
+				class="tab-button"
+				class:active={activeTab === 'growing'}
+				on:click={() => setActiveTab('growing')}
+			>
+				<span class="tab-icon">🌿</span>
+				<span class="tab-text">Growing</span>
+			</button>
+			<button
+				class="tab-button"
+				class:active={activeTab === 'postHarvest'}
+				on:click={() => setActiveTab('postHarvest')}
+			>
+				<span class="tab-icon">📦</span>
+				<span class="tab-text">Post-Harvest</span>
+			</button>
+			<button
+				class="tab-button"
+				class:active={activeTab === 'pestControl'}
+				on:click={() => setActiveTab('pestControl')}
+			>
+				<span class="tab-icon">🛡️</span>
+				<span class="tab-text">Pest Control</span>
+			</button>
 		</div>
 
-		<div class="tip-section">
-			<h4>📦 Post-Harvest Tips</h4>
-			<p>{crop.postHarvestTips}</p>
-		</div>
-
-		<div class="tip-section">
-			<h4>🛡️ Pest Control</h4>
-			<p>{crop.pesticides}</p>
+		<!-- Tab Content -->
+		<div class="tab-content">
+			{#if activeTab === 'preHarvest'}
+				<div class="tip-content">
+					<h4>🌱 Pre-Harvest Preparation</h4>
+					<p>{crop.farmingTips.preHarvest}</p>
+				</div>
+			{:else if activeTab === 'growing'}
+				<div class="tip-content">
+					<h4>🌿 Growing Stage Management</h4>
+					<p>{crop.farmingTips.growing}</p>
+				</div>
+			{:else if activeTab === 'postHarvest'}
+				<div class="tip-content">
+					<h4>📦 Post-Harvest Handling</h4>
+					<p>{crop.farmingTips.postHarvest}</p>
+				</div>
+			{:else if activeTab === 'pestControl'}
+				<div class="tip-content">
+					<h4>🛡️ Pest & Disease Control</h4>
+					<p>{crop.farmingTips.pestControl}</p>
+				</div>
+			{/if}
 		</div>
 	</div>
 
@@ -229,6 +255,7 @@
 <style>
 	.crop-container {
 		max-width: 100%;
+		padding-top: 80px; /* Add space for fixed back button */
 	}
 
 	.crop-header {
@@ -264,40 +291,15 @@
 		margin: 0;
 	}
 
-	.metrics-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 16px;
+	.description-content {
+		line-height: 1.7;
 	}
 
-	.metric {
-		display: flex;
-		align-items: center;
-		padding: 12px;
-		background: #f8f9fa;
-		border-radius: 8px;
-	}
-
-	.metric-icon {
-		font-size: 24px;
-		margin-right: 12px;
-	}
-
-	.metric-info {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.metric-label {
-		font-size: 12px;
-		color: #666;
-		margin-bottom: 2px;
-	}
-
-	.metric-value {
-		font-size: 14px;
-		font-weight: 600;
+	.description-content p {
+		margin: 0;
 		color: #2c3e50;
+		font-size: 15px;
+		text-align: justify;
 	}
 
 	.recommendation-content {
@@ -358,24 +360,68 @@
 		color: #4caf50;
 	}
 
-	.tip-section {
+	/* Tabbed Tips Styles */
+	.tab-navigation {
+		display: flex;
+		border-bottom: 2px solid #e1e5e9;
 		margin-bottom: 20px;
+		overflow-x: auto;
 	}
 
-	.tip-section:last-child {
-		margin-bottom: 0;
+	.tab-button {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 12px 8px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		border-bottom: 3px solid transparent;
+		min-width: 80px;
 	}
 
-	.tip-section h4 {
-		margin: 0 0 8px 0;
-		color: #2c3e50;
-		font-size: 16px;
+	.tab-button:hover {
+		background: #f8f9fa;
 	}
 
-	.tip-section p {
-		margin: 0;
+	.tab-button.active {
+		border-bottom-color: #4caf50;
+		background: #f8fff8;
+	}
+
+	.tab-icon {
+		font-size: 24px;
+		margin-bottom: 4px;
+	}
+
+	.tab-text {
+		font-size: 12px;
+		font-weight: 600;
 		color: #666;
-		line-height: 1.5;
+		text-align: center;
+	}
+
+	.tab-button.active .tab-text {
+		color: #4caf50;
+	}
+
+	.tab-content {
+		min-height: 200px;
+	}
+
+	.tip-content h4 {
+		margin: 0 0 12px 0;
+		color: #2c3e50;
+		font-size: 18px;
+	}
+
+	.tip-content p {
+		margin: 0;
+		color: #555;
+		line-height: 1.6;
+		text-align: justify;
 	}
 
 	.timing-info {
@@ -386,13 +432,16 @@
 
 	.timing-item {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		gap: 12px;
 	}
 
 	.timing-icon {
 		font-size: 24px;
 		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.timing-item strong {
@@ -409,9 +458,132 @@
 	}
 
 	@media (max-width: 480px) {
-		.metrics-grid,
 		.requirements-grid {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Desktop responsive adjustments */
+	@media (min-width: 768px) {
+		.crop-container {
+			max-width: 900px;
+			margin: 0 auto;
+			padding-top: 100px; /* More space for larger fixed back button */
+		}
+
+		.crop-header {
+			margin-bottom: 40px;
+		}
+
+		.crop-image-placeholder {
+			width: 160px;
+			height: 160px;
+			margin-bottom: 24px;
+		}
+
+		.crop-icon-large {
+			font-size: 80px;
+		}
+
+		.crop-title h1 {
+			font-size: 36px;
+		}
+
+		.crop-subtitle {
+			font-size: 18px;
+		}
+
+		.description-content p {
+			font-size: 16px;
+			line-height: 1.8;
+		}
+
+		.recommendation-content {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 24px;
+		}
+
+		.recommendation-item {
+			flex-direction: column;
+			text-align: center;
+			background: #f8f9fa;
+			padding: 20px;
+			border-radius: 12px;
+		}
+
+		.rec-icon {
+			font-size: 32px;
+			margin-bottom: 12px;
+		}
+
+		.requirements-grid {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 16px;
+		}
+
+		.requirement {
+			padding: 16px;
+		}
+
+		.tab-button {
+			flex-direction: row;
+			padding: 16px 20px;
+			gap: 8px;
+		}
+
+		.tab-icon {
+			font-size: 20px;
+			margin-bottom: 0;
+		}
+
+		.tab-text {
+			font-size: 14px;
+		}
+
+		.tip-content h4 {
+			font-size: 20px;
+		}
+
+		.tip-content p {
+			font-size: 15px;
+			line-height: 1.7;
+		}
+
+		.timing-info {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 24px;
+		}
+
+		.timing-item {
+			flex-direction: column;
+			text-align: center;
+			background: #f8f9fa;
+			padding: 20px;
+			border-radius: 12px;
+			align-items: center;
+			justify-content: center;
+			min-height: 120px;
+		}
+
+		.timing-icon {
+			font-size: 32px;
+			margin-bottom: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.crop-container {
+			max-width: 1100px;
+			padding-top: 100px; /* Maintain consistent spacing */
+		}
+
+		.recommendation-content {
+			grid-template-columns: repeat(3, 1fr);
 		}
 	}
 </style>

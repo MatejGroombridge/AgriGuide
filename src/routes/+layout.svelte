@@ -32,6 +32,19 @@
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 	}
 
+	/* Desktop responsive adjustments */
+	@media (min-width: 768px) {
+		.app {
+			max-width: 1200px;
+			margin: 20px auto;
+			border-radius: 12px;
+		}
+
+		.content {
+			padding: 40px 60px 120px 60px;
+		}
+	}
+
 	.content {
 		flex: 1;
 		padding: 20px 20px 100px 20px; /* Bottom padding for navbar */
@@ -138,5 +151,37 @@
 
 	:global(.grid-2) {
 		grid-template-columns: 1fr 1fr;
+	}
+
+	/* Additional responsive grid classes */
+	@media (min-width: 768px) {
+		:global(.grid-3) {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 20px;
+		}
+
+		:global(.grid-4) {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 20px;
+		}
+
+		:global(.btn) {
+			padding: 14px 28px;
+			font-size: 18px;
+		}
+
+		:global(h1) {
+			font-size: 36px;
+		}
+
+		:global(h2) {
+			font-size: 28px;
+		}
+
+		:global(h3) {
+			font-size: 22px;
+		}
 	}
 </style>
