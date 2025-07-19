@@ -60,7 +60,6 @@
 
 	async function scanQRCode() {
 		scanning = true;
-		qrResult = '';
 		if (browser) {
 			const { Html5Qrcode } = await import('html5-qrcode');
 			html5QrCode = new Html5Qrcode(qrCodeRegionId);
@@ -79,6 +78,23 @@
 							soilData.temperature = parsed.temperature;
 							qrResult = decodedText;
 							stopScanning();
+							// Store data in localStorage for recommendations page
+							if (browser) {
+								localStorage.setItem(
+									'soilData',
+									JSON.stringify({
+										ph: 6.5, // Default pH value since sensor was removed
+										organicMatter: 3.0, // Default organic matter value since sensor was removed
+										nitrogen: 80, // Default nitrogen value since sensor was removed
+										moisture: parseFloat(soilData.moisture),
+										light: parseFloat(soilData.light),
+										temperature: parseFloat(soilData.temperature)
+									})
+								);
+							}
+
+							// Navigate to recommendations
+							goto('/recommendations');
 						} else {
 							qrResult = 'Invalid QR code format.';
 						}

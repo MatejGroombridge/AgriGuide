@@ -19,7 +19,7 @@
 </svelte:head>
 
 <div class="search-container">
-	<h1>🔍 Search Crops</h1>
+	<h1><i class="fas fa-search"></i> Search Crops</h1>
 	<p>Discover crops suitable for your region and farming conditions</p>
 
 	<div class="search-box">
@@ -31,7 +31,9 @@
 				class="search-input"
 			/>
 			{#if searchQuery}
-				<button class="clear-btn" on:click={clearSearch}>✕</button>
+				<button class="clear-btn" on:click={clearSearch} aria-label="Clear search"
+					><i class="fas fa-times"></i></button
+				>
 			{/if}
 		</div>
 	</div>
@@ -56,23 +58,25 @@
 					<p class="crop-description">{crop.description}</p>
 					<div class="crop-meta">
 						<span class="meta-item">
-							💰 {convertAndFormatPrice(crop.marketPrice)}/ton
+							<i class="fas fa-dollar-sign"></i>
+							{convertAndFormatPrice(crop.marketPrice)}/ton
 						</span>
 						<span class="meta-item">
-							📅 Best: {crop.bestSellMonth}
+							<i class="fas fa-calendar-alt"></i> Best: {crop.bestSellMonth}
 						</span>
 						<span class="meta-item">
-							⏱️ {crop.growthTime} days
+							<i class="fas fa-clock"></i>
+							{crop.growthTime} days
 						</span>
 					</div>
 				</div>
-				<div class="crop-arrow">▶</div>
+				<div class="crop-arrow"><i class="fas fa-chevron-right"></i></div>
 			</a>
 		{/each}
 
 		{#if filteredCrops.length === 0}
 			<div class="no-results">
-				<div class="no-results-icon">🌾</div>
+				<div class="no-results-icon"><i class="fas fa-search fa-3x"></i></div>
 				<h3>No crops found</h3>
 				<p>Try adjusting your search terms or browse all available crops.</p>
 				<button class="btn" on:click={clearSearch}>Show All Crops</button>
