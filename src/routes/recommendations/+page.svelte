@@ -231,12 +231,12 @@
 </svelte:head>
 
 <div class="recommendations-container">
-	<h1>🎯 Crop Recommendations</h1>
+	<h1><i class="fas fa-bullseye"></i> Crop Recommendations</h1>
 
 	{#if soilData}
 		<!-- Soil Summary -->
 		<div class="card summary-card">
-			<h3>📊 Your Soil Conditions</h3>
+			<h3><i class="fas fa-chart-bar"></i> Your Sensor Readings</h3>
 			<div class="grid grid-2">
 				<div class="soil-metric">
 					<span class="metric-label">pH Level</span>
@@ -259,7 +259,7 @@
 
 		<!-- Climate Summary -->
 		<div class="card climate-card">
-			<h3>🌤️ Current Climate</h3>
+			<h3><i class="fas fa-cloud-sun"></i> Current Climate</h3>
 			{#if loadingWeather}
 				<div class="loading-state">
 					<div class="loading-spinner"></div>
@@ -290,7 +290,7 @@
 		<!-- Weather Warnings -->
 		{#if weatherWarnings.length > 0}
 			<div class="card weather-warnings">
-				<h3>⚠️ Weather Alerts</h3>
+				<h3><i class="fas fa-exclamation-triangle"></i> Weather Alerts</h3>
 				<p class="warnings-intro">
 					Based on upcoming weather conditions, here are important warnings for your crops:
 				</p>
@@ -337,7 +337,7 @@
 
 		<!-- Recommendations -->
 		{#if recommendations.length > 0}
-			<h2>✨ Recommended Crops</h2>
+			<h2><i class="fas fa-star"></i> Recommended Crops</h2>
 			<p class="recommendation-intro">
 				Based on your soil and climate conditions, here are the best crops for your farm:
 			</p>
@@ -495,12 +495,6 @@
 		margin: 0 0 4px 0;
 		color: #d84315;
 		font-size: 16px;
-	}
-
-	.warning-date {
-		font-size: 12px;
-		color: #666;
-		font-weight: 500;
 	}
 
 	.affected-crops {

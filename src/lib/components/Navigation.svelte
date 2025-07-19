@@ -6,12 +6,22 @@
 
 <nav class="navbar">
 	<a
+		href="/about"
+		class="nav-item"
+		class:active={currentPath === '/about'}
+		class:disabled={currentPath === '/about'}
+	>
+		<div class="nav-icon"><i class="fas fa-info-circle"></i></div>
+		<span>About</span>
+	</a>
+
+	<a
 		href="/"
 		class="nav-item"
 		class:active={currentPath === '/'}
 		class:disabled={currentPath === '/'}
 	>
-		<div class="nav-icon">📷</div>
+		<div class="nav-icon"><i class="fas fa-home"></i></div>
 		<span>Home</span>
 	</a>
 
@@ -21,7 +31,7 @@
 		class:active={currentPath === '/search'}
 		class:disabled={currentPath === '/search'}
 	>
-		<div class="nav-icon">🔍</div>
+		<div class="nav-icon"><i class="fas fa-search"></i></div>
 		<span>Search</span>
 	</a>
 </nav>

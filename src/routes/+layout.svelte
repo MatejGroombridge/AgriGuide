@@ -1,6 +1,33 @@
 <script>
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import Navigation from '$lib/components/Navigation.svelte';
+	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+
+	let showLoading = true;
+
+	onMount(() => {
+		if (browser) {
+			// Check if user has visited before
+			const hasVisited = localStorage.getItem('agriguide-visited');
+
+			if (hasVisited) {
+				// Returning user - shorter loading time
+				setTimeout(() => {
+					showLoading = false;
+				}, 800);
+			} else {
+				// First-time user - full loading experience
+				localStorage.setItem('agriguide-visited', 'true');
+				setTimeout(() => {
+					showLoading = false;
+				}, 2500);
+			}
+		}
+	});
 </script>
+
+<LoadingScreen isVisible={showLoading} />
 
 <main class="app">
 	<div class="content">

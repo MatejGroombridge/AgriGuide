@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import { onDestroy } from 'svelte';
 
 	let inputMode = 'manual'; // 'manual' or 'qr'
 	let soilData = {
@@ -39,44 +40,53 @@
 		goto('/recommendations');
 	}
 
-	// Camera logic for QR
+	// QR code scanner logic using html5-qrcode
 	let scanning = false;
-	let videoElement;
-	let stream;
+	let qrResult = '';
+	let html5QrCode;
+	let qrCodeRegionId = 'qr-code-region';
 
 	async function scanQRCode() {
 		scanning = true;
-		if (browser && navigator.mediaDevices?.getUserMedia) {
+		qrResult = '';
+		if (browser) {
+			const { Html5Qrcode } = await import('html5-qrcode');
+			html5QrCode = new Html5Qrcode(qrCodeRegionId);
 			try {
-				const stream = await navigator.mediaDevices.getUserMedia({
-					video: { facingMode: 'environment' }
-				});
-				if (videoElement) {
-					videoElement.srcObject = stream;
-				}
+				await html5QrCode.start(
+					{ facingMode: 'environment' },
+					{
+						fps: 10,
+						qrbox: 250
+					},
+					(decodedText, decodedResult) => {
+						qrResult = decodedText;
+						stopScanning();
+					}
+				);
 			} catch (err) {
-				alert('Could not access camera: ' + err.message);
+				alert('Could not start QR scanner: ' + err.message);
 				scanning = false;
 			}
 		}
 	}
 
-	function stopScanning() {
+	async function stopScanning() {
 		scanning = false;
-		if (stream) {
-			stream.getTracks().forEach((track) => {
-				if (track.readyState == 'live') {
-					track.stop();
-				}
-			});
-			stream = null;
+		if (html5QrCode) {
+			await html5QrCode.stop();
+			html5QrCode.clear();
+			html5QrCode = null;
 		}
 	}
 
-	// Optional: stop camera if mode changes or component is destroyed
-	$: if (!scanning && videoElement && videoElement.srcObject) {
-		videoElement.srcObject = null;
-	}
+	onDestroy(() => {
+		if (html5QrCode) {
+			html5QrCode.stop();
+			html5QrCode.clear();
+			html5QrCode = null;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -84,7 +94,7 @@
 </svelte:head>
 
 <div class="home-container">
-	<h1>🌱 Sensor Data Input</h1>
+	<h1><i class="fas fa-seedling"></i> Sensor Data Input</h1>
 	<p>Enter your sensor readings to get personalised crop recommendations</p>
 
 	<div class="mode-selector">
@@ -93,10 +103,10 @@
 			class:active={inputMode === 'manual'}
 			on:click={() => switchMode('manual')}
 		>
-			✏️ Manual Input
+			<i class="fas fa-edit"></i> Manual Input
 		</button>
 		<button class="mode-btn" class:active={inputMode === 'qr'} on:click={() => switchMode('qr')}>
-			📱 QR Code
+			<i class="fas fa-qrcode"></i> QR Code
 		</button>
 	</div>
 
@@ -149,26 +159,23 @@
 		<div class="qr-input">
 			{#if !scanning}
 				<div class="qr-scanner-placeholder">
-					<div class="qr-icon">📱</div>
+					<div class="qr-icon"><i class="fas fa-mobile-alt fa-3x"></i></div>
 					<h3>QR Code Scanner</h3>
 					<p>Position your device camera over the QR code to automatically input sensor data</p>
 					<button class="btn" on:click={scanQRCode}> Start Scanning </button>
 				</div>
 			{:else if scanning}
 				<div class="qr-scanner-video">
-					<video
-						bind:this={videoElement}
-						autoplay
-						playsinline
-						aria-label="QR code scanner camera feed"
-						style="width:100%;max-width:400px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.1);"
-					>
-						<track kind="captions" label="No Caption Available" src="" default />
-					</video>
+					<div id={qrCodeRegionId} style="width:100%;max-width:400px;"></div>
 					<p style="margin-top:12px;color:#666;">
 						Camera active. Position the QR code within the frame.
 					</p>
 					<button class="btn" on:click={stopScanning}>Stop Scanning</button>
+				</div>
+			{/if}
+			{#if qrResult}
+				<div class="qr-result">
+					<p><strong>QR Code Result:</strong> {qrResult}</p>
 				</div>
 			{/if}
 		</div>

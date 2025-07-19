@@ -284,13 +284,6 @@
 		color: #2c3e50;
 	}
 
-	.crop-subtitle {
-		color: #666;
-		font-size: 16px;
-		line-height: 1.5;
-		margin: 0;
-	}
-
 	.description-content {
 		line-height: 1.7;
 	}
@@ -487,10 +480,6 @@
 
 		.crop-title h1 {
 			font-size: 36px;
-		}
-
-		.crop-subtitle {
-			font-size: 18px;
 		}
 
 		.description-content p {
