@@ -40,7 +40,8 @@
 	:global(body) {
 		margin: 0;
 		padding: 0;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		font-family: 'Lato', sans-serif;
+		@import url('/static/fonts/lato.css');
 		background: #f8f9fa;
 		color: #333;
 	}

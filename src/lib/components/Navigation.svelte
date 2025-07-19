@@ -74,6 +74,7 @@
 		min-width: 60px;
 		flex: 1; /* Make each nav item take up equal space */
 		justify-content: center; /* Center content vertically */
+		font-family: 'Lato', sans-serif;
 	}
 
 	.nav-item:hover:not(.disabled) {
@@ -84,6 +85,7 @@
 	.nav-item.active {
 		color: #4caf50;
 		font-weight: 600;
+		font-family: 'Lato', sans-serif;
 	}
 
 	.nav-item.disabled {
@@ -99,5 +101,6 @@
 	.nav-item span {
 		font-size: 12px;
 		font-weight: 500;
+		font-family: 'Lato', sans-serif;
 	}
 </style>
