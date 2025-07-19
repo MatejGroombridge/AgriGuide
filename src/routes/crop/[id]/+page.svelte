@@ -86,7 +86,7 @@
 
 	<!-- Crop Description -->
 	<div class="card description-card">
-		<h3>� About This Crop</h3>
+		<h3><i class="fas fa-info-circle"></i> About This Crop</h3>
 		<div class="description-content">
 			<p>{crop.description}</p>
 		</div>
@@ -95,10 +95,10 @@
 	<!-- Why Recommended -->
 	{#if recommendationReason}
 		<div class="card recommendation-card">
-			<h3>✨ Why This Crop is Recommended</h3>
+			<h3><i class="fas fa-star"></i> Why This Crop is Recommended</h3>
 			<div class="recommendation-content">
 				<div class="recommendation-item">
-					<span class="rec-icon">🎯</span>
+					<span class="rec-icon"><i class="fas fa-bullseye green-icon"></i></span>
 					<div>
 						<strong>Perfect Soil Match</strong>
 						<p>Your soil conditions are ideal for growing {crop.name.toLowerCase()}.</p>
@@ -106,7 +106,7 @@
 				</div>
 				{#if recommendationReason.highPrice}
 					<div class="recommendation-item">
-						<span class="rec-icon">💎</span>
+						<span class="rec-icon"><i class="fas fa-gem green-icon"></i></span>
 						<div>
 							<strong>High Market Value</strong>
 							<p>This crop commands premium prices in the market, maximising your profits.</p>
@@ -114,7 +114,7 @@
 					</div>
 				{/if}
 				<div class="recommendation-item">
-					<span class="rec-icon">🌍</span>
+					<span class="rec-icon"><i class="fas fa-globe green-icon"></i></span>
 					<div>
 						<strong>Climate Suitable</strong>
 						<p>Current weather conditions favor the growth of this crop.</p>
@@ -126,7 +126,7 @@
 
 	<!-- Soil Requirements -->
 	<div class="card requirements-card">
-		<h3>🌱 Soil Requirements</h3>
+		<h3><i class="fas fa-seedling"></i> Soil Requirements</h3>
 		<div class="requirements-grid">
 			<div class="requirement">
 				<span class="req-label">pH Level</span>
@@ -155,7 +155,7 @@
 
 	<!-- Farming Tips -->
 	<div class="card tips-card">
-		<h3>💡 Comprehensive Farming Guide</h3>
+		<h3><i class="fas fa-lightbulb"></i> Comprehensive Farming Guide</h3>
 
 		<!-- Tab Navigation -->
 		<div class="tab-navigation">
@@ -164,7 +164,7 @@
 				class:active={activeTab === 'preHarvest'}
 				on:click={() => setActiveTab('preHarvest')}
 			>
-				<span class="tab-icon">🌱</span>
+				<span class="tab-icon"><i class="fas fa-seedling green-icon"></i></span>
 				<span class="tab-text">Pre-Harvest</span>
 			</button>
 			<button
@@ -172,7 +172,7 @@
 				class:active={activeTab === 'growing'}
 				on:click={() => setActiveTab('growing')}
 			>
-				<span class="tab-icon">🌿</span>
+				<span class="tab-icon"><i class="fas fa-leaf green-icon"></i></span>
 				<span class="tab-text">Growing</span>
 			</button>
 			<button
@@ -180,7 +180,7 @@
 				class:active={activeTab === 'postHarvest'}
 				on:click={() => setActiveTab('postHarvest')}
 			>
-				<span class="tab-icon">📦</span>
+				<span class="tab-icon"><i class="fas fa-box green-icon"></i></span>
 				<span class="tab-text">Post-Harvest</span>
 			</button>
 			<button
@@ -188,7 +188,7 @@
 				class:active={activeTab === 'pestControl'}
 				on:click={() => setActiveTab('pestControl')}
 			>
-				<span class="tab-icon">🛡️</span>
+				<span class="tab-icon"><i class="fas fa-shield-alt green-icon"></i></span>
 				<span class="tab-text">Pest Control</span>
 			</button>
 		</div>
@@ -197,22 +197,22 @@
 		<div class="tab-content">
 			{#if activeTab === 'preHarvest'}
 				<div class="tip-content">
-					<h4>🌱 Pre-Harvest Preparation</h4>
+					<h4><i class="fas fa-seedling green-icon"></i> Pre-Harvest Preparation</h4>
 					<p>{crop.farmingTips.preHarvest}</p>
 				</div>
 			{:else if activeTab === 'growing'}
 				<div class="tip-content">
-					<h4>🌿 Growing Stage Management</h4>
+					<h4><i class="fas fa-leaf green-icon"></i> Growing Stage Management</h4>
 					<p>{crop.farmingTips.growing}</p>
 				</div>
 			{:else if activeTab === 'postHarvest'}
 				<div class="tip-content">
-					<h4>📦 Post-Harvest Handling</h4>
+					<h4><i class="fas fa-box green-icon"></i> Post-Harvest Handling</h4>
 					<p>{crop.farmingTips.postHarvest}</p>
 				</div>
 			{:else if activeTab === 'pestControl'}
 				<div class="tip-content">
-					<h4>🛡️ Pest & Disease Control</h4>
+					<h4><i class="fas fa-shield-alt green-icon"></i> Pest & Disease Control</h4>
 					<p>{crop.farmingTips.pestControl}</p>
 				</div>
 			{/if}
@@ -221,24 +221,24 @@
 
 	<!-- Timing Information -->
 	<div class="card timing-card">
-		<h3>📅 Timing Guide</h3>
+		<h3><i class="fas fa-calendar-alt"></i> Timing Guide</h3>
 		<div class="timing-info">
 			<div class="timing-item">
-				<span class="timing-icon">🌱</span>
+				<span class="timing-icon"><i class="fas fa-seedling green-icon"></i></span>
 				<div>
 					<strong>Best Planting Time</strong>
 					<p>Start planting in <strong>{plantingMonth}</strong> for optimal results</p>
 				</div>
 			</div>
 			<div class="timing-item">
-				<span class="timing-icon">📈</span>
+				<span class="timing-icon"><i class="fas fa-chart-line green-icon"></i></span>
 				<div>
 					<strong>Best Selling Time</strong>
 					<p>Market prices peak in <strong>{crop.bestSellMonth}</strong></p>
 				</div>
 			</div>
 			<div class="timing-item">
-				<span class="timing-icon">⏰</span>
+				<span class="timing-icon"><i class="fas fa-clock green-icon"></i></span>
 				<div>
 					<strong>Growth Duration</strong>
 					<p>
@@ -310,6 +310,10 @@
 	.rec-icon {
 		font-size: 24px;
 		flex-shrink: 0;
+	}
+
+	.green-icon {
+		color: #4caf50;
 	}
 
 	.recommendation-item strong {
