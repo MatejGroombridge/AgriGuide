@@ -41,6 +41,7 @@
 	// Camera logic for QR
 	let scanning = false;
 	let videoElement;
+	let stream;
 
 	async function scanQRCode() {
 		scanning = true;
@@ -79,7 +80,7 @@
 
 <div class="home-container">
 	<h1>🌱 Soil Data Input</h1>
-	<p>Enter your soil conditions to get personalized crop recommendations</p>
+	<p>Enter your soil conditions to get personalised crop recommendations</p>
 
 	<div class="mode-selector">
 		<button

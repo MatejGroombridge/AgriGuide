@@ -109,7 +109,7 @@
 						<span class="rec-icon">💎</span>
 						<div>
 							<strong>High Market Value</strong>
-							<p>This crop commands premium prices in the market, maximizing your profits.</p>
+							<p>This crop commands premium prices in the market, maximising your profits.</p>
 						</div>
 					</div>
 				{/if}
