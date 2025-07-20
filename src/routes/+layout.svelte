@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import Navigation from '$lib/components/Navigation.svelte';
-	// import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 
 	let showLoading = true;
 
@@ -27,7 +27,7 @@
 	});
 </script>
 
-<!-- <LoadingScreen isVisible={showLoading} /> -->
+<LoadingScreen isVisible={showLoading} />
 
 <main class="app">
 	<div class="content">
